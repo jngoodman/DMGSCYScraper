@@ -1,5 +1,5 @@
 from requests import get
-from src.handle_http_data.constants import BAND_MERCH_URL, LOCAL_HTTP_PATH
+from src.handle_http.constants import BAND_MERCH_URL, LOCAL_HTTP_PATH
 
 
 class GetHTTP:

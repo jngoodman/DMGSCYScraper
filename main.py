@@ -1,11 +1,12 @@
-from src.handle_http_data import HandleLocalHTTP, check_for_local_data
+from src import ManageDatabase, check_for_local_data
 
 
 def main():
     check_for_local_data()
-    http_handle_instance = HandleLocalHTTP()
-    http_handle_instance.run()
-    print(http_handle_instance.bands_dictionary)
+    manage_database = ManageDatabase()
+    manage_database.create_database()
+    manage_database.create_band_table()
+    manage_database.add_to_band_table()
 
 
 if __name__ == "__main__":

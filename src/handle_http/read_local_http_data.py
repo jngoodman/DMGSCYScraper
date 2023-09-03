@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from src.handle_http_data.constants import LOCAL_HTTP_PATH, COLLECTION_BASE_URL
+from src.handle_http.constants import LOCAL_HTTP_PATH, COLLECTION_BASE_URL
 
 
 class HandleLocalHTTP:

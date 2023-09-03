@@ -1,5 +1,5 @@
-from src.handle_http_data.constants import LOCAL_HTTP_PATH
-from src.handle_http_data.get_web_http_data import GetHTTP
+from src.handle_http.constants import LOCAL_HTTP_PATH
+from src.handle_http.get_web_http_data import GetHTTP
 from os import path, remove
 
 
