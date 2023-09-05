@@ -2,45 +2,44 @@ from sqlite3 import connect
 from src.handle_sql.constants import DATABASE_PATH
 
 
-def cursor(func):
+def cursor_dec(func):
     """Creates, commits and closes a cursor around a function that should execute a SQL command."""
+
     def wrapper(*args, **kwargs):
         self = args[0]
-        if self.connection:
-            self.cursor = self.connection.cursor()
-            func(*args, **kwargs)
-            self.connection.commit()
-            self.cursor.close()
+        kwargs['connection'] = self.create_connection()
+        kwargs['cursor'] = kwargs['connection'].cursor()
+        func(*args, **kwargs)
+        self.store_cursor_data(**kwargs)
+        kwargs['connection'].commit()
+        kwargs['cursor'].close()
+        kwargs['connection'].close()
 
     return wrapper
 
 
 class ManageConnection:
 
-    def __init__(self):
-        self.connection = None
-        self.database = DATABASE_PATH
-        self.cursor = None
+    def __init__(self, database_file=DATABASE_PATH):
+        self.database = database_file
         self.temp_cursor_data: list = []
 
     def create_connection(self):
-        self.connection = connect(self.database)
+        return connect(self.database)
 
-    def close_connection(self):
-        if self.connection:
-            self.connection.close()
+    def store_cursor_data(self, **kwargs):
+        database_rows = []
+        for row in kwargs['cursor']:
+            database_rows.append(row)
+        self.temp_cursor_data = database_rows
 
     def return_cursor_data(self):
-        database_rows = []
-        for row in self.cursor:
-            database_rows.append(row)
-        return database_rows
+        return self.temp_cursor_data
 
-    @cursor
-    def execute_sql_command(self, *args, many=False, get_cursor_data=False):
-        if not many:
-            self.cursor.execute(*args)
-        else:
-            self.cursor.executemany(*args)
-        if get_cursor_data:
-            self.temp_cursor_data = self.return_cursor_data()
+    @cursor_dec
+    def cursor_execute(self, sql_command, **kwargs):
+        kwargs['cursor'].execute(sql_command)
+
+    @cursor_dec
+    def cursor_executemany(self, *args, **kwargs):
+        kwargs['cursor'].executemany(*args)

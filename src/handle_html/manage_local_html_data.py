@@ -1,10 +1,11 @@
-from src.handle_html.constants import LOCAL_HTML_PATH
+from src.handle_html.constants import BAND_COLLECTIONS_PATH
 from src.handle_html.get_web_html_data import GetHTML
 from os import path, remove
 
 
-def check_for_local_data():
-    if path.isfile(LOCAL_HTML_PATH):
+def check_for_local_data(path_=BAND_COLLECTIONS_PATH):
+    """Checks for existing locally stored data. Otherwise, creates the data. Intended for use with stored HTML."""
+    if path.isfile(path_):
         prompt_for_new_data()
     else:
         create_local_data()
@@ -16,8 +17,8 @@ def create_local_data():
     get_html.save_html()
 
 
-def remove_local_data():
-    remove(LOCAL_HTML_PATH)
+def remove_local_data(path_=BAND_COLLECTIONS_PATH):
+    remove(path_)
 
 
 def prompt_for_new_data():
@@ -35,3 +36,4 @@ def prompt_for_new_data():
             awaiting_response = False
         else:
             print("Invalid response. Please try again.")
+            continue

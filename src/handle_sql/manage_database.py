@@ -1,60 +1,55 @@
 from src.handle_sql.manage_connection import ManageConnection
 from src.handle_sql.constants import DATABASE_PATH, CommandPaths
-from src.handle_html import HandleLocalHTML
-from os import path
+from src.handle_html import HandleBandHTML
+from os import remove
 
 
-def read_sql_script(file_path):
-    with open(file_path, 'r') as sql_file:
-        return sql_file.read()
+def read_file(file_path):
+    with open(file_path, 'r') as file:
+        return file.read()
 
 
-def connect_exec_close(func):
-    """Creates and closes a database connection around a function that should execute a SQL command to the connection
-    manager of a ManageDatabase instance."""
+class HandleDatabase:
+    """Handle a database file. Specifies an input database path and an input html_handler. The html_handler is used
+    to access data from different locally-stored html files. For DMGSCY data, a unique html_file exists for the band
+    collections page, and any specific band collections that have been requested by the user."""
 
-    def wrapper(*args):
-        self = args[0]
-        self.connection_manager.create_connection()
-        func(*args)
-        self.connection_manager.close_connection()
+    def __init__(self, database_file=DATABASE_PATH, html_handler=HandleBandHTML()):
+        self.database_file = database_file
+        self.connection_manager = ManageConnection(database_file)
+        self.html_handler = html_handler
 
-    return wrapper
+    def execute_basic_command(self, sql_path=CommandPaths.CREATE_BAND_TABLE):
+        """Executes a SQL command without accepting additional parameters. Acceptable commands:
+        CREATE_BAND_TABLE: creates band table.
+        SELECT_BAND_TABLE: selects all in band table."""
+        connection_manager = self.connection_manager
+        command: str = read_file(sql_path)
+        connection_manager.cursor_execute(command)
 
+    def execute_print_command(self, sql_path=CommandPaths.SELECT_BAND_TABLE):
+        """Executes a SQL command without accepting additional parameters and prints into python. Acceptable commands:
+        SELECT_BAND_TABLE: selects all in band table."""
+        connection_manager = self.connection_manager
+        command: str = read_file(sql_path)
+        connection_manager.cursor_execute(command)
+        print(connection_manager.temp_cursor_data)
 
-class ManageDatabase:
+    def delete_database_file_on_disk(self):
+        user_response = input("This will delete the database on disk. Do you want to do this? (Y/N). ").lower()
+        if user_response == 'y':
+            print("Database deleted.")
+            remove(self.database_file)
+        else:
+            print("Deletion aborted.")
 
-    def __init__(self):
-        self.connection_manager = ManageConnection()
-        self.database = self.connection_manager.database
-        self.local_html_handler = HandleLocalHTML()
-
-    @connect_exec_close
-    def create_database(self):
-        script_string: str = read_sql_script(CommandPaths.CREATE_DATABASE)
-        if not path.isfile(DATABASE_PATH):
-            self.connection_manager.execute_sql_command(script_string)
-
-    @connect_exec_close
-    def create_table(self, command=CommandPaths.CREATE_BAND_TABLE):
-        """Creates a table. Default is the band table."""
-        script_string: str = read_sql_script(command)
-        self.connection_manager.execute_sql_command(script_string)
-
-    @connect_exec_close
-    def return_table(self, command=CommandPaths.RETURN_BAND_TABLE):
-        """Returns a table. Default is the band table."""
-        script_string: str = read_sql_script(command)
-        self.connection_manager.execute_sql_command(script_string, get_cursor_data=True)
-        print(self.connection_manager.temp_cursor_data)
-
-    @connect_exec_close
-    def add_to_band_table(self):
-        script_string: str = read_sql_script(CommandPaths.ADD_TO_BAND_TABLE)
+    def execute_insertion_command(self, sql_path=CommandPaths.ADD_TO_BAND_TABLE):
+        """Executes a SQL command to insert html data into a table. Acceptable commands:
+        ADD_TO_BAND_TABLE: adds band name and url rows to band table."""
+        connection_manager = self.connection_manager
+        command: str = read_file(sql_path)
         rows_to_insert = []
-        self.local_html_handler.run()
-        for band, url in self.local_html_handler.bands_dictionary.items():
+        self.html_handler.run()
+        for band, url in self.html_handler.bands_dictionary.items():
             rows_to_insert.append([band, url])
-        self.connection_manager.execute_sql_command(script_string, rows_to_insert, many=True)
-
-
+        connection_manager.cursor_executemany(command, rows_to_insert)
