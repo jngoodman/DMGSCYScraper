@@ -1,5 +1,5 @@
 from requests import get
-from src.handle_html.constants import BAND_COLLECTIONS_URL, BAND_COLLECTIONS_PATH
+from src.handle_html.constants import BAND_COLLECTIONS_URL, HTML_KEYS
 
 
 class GetHTML:
@@ -12,5 +12,5 @@ class GetHTML:
         self.url_content = get(self.url).content
 
     def save_html(self):
-        with open(BAND_COLLECTIONS_PATH, 'wb') as file:
+        with open(HTML_KEYS['band_collections'], 'wb') as file:
             file.write(self.url_content)

@@ -1,45 +1,39 @@
 from sqlite3 import connect
-from src.handle_sql.constants import DATABASE_PATH
-
-
-def cursor_dec(func):
-    """Creates, commits and closes a cursor around a function that should execute a SQL command."""
-
-    def wrapper(*args, **kwargs):
-        self = args[0]
-        kwargs['connection'] = self.create_connection()
-        kwargs['cursor'] = kwargs['connection'].cursor()
-        func(*args, **kwargs)
-        self.store_cursor_data(**kwargs)
-        kwargs['connection'].commit()
-        kwargs['cursor'].close()
-        kwargs['connection'].close()
-
-    return wrapper
 
 
 class ManageConnection:
 
-    def __init__(self, database_file=DATABASE_PATH):
+    def __init__(self, database_file: str):
         self.database = database_file
         self.temp_cursor_data: list = []
 
     def create_connection(self):
         return connect(self.database)
 
-    def store_cursor_data(self, **kwargs):
+    def store_cursor_data(self, cursor):
         database_rows = []
-        for row in kwargs['cursor']:
+        for row in cursor:
             database_rows.append(row)
         self.temp_cursor_data = database_rows
 
     def return_cursor_data(self):
         return self.temp_cursor_data
 
-    @cursor_dec
-    def cursor_execute(self, sql_command, **kwargs):
-        kwargs['cursor'].execute(sql_command)
+    def _store_commit_close(self, connection, cursor):
+        self.store_cursor_data(cursor)
+        connection.commit()
+        cursor.close()
+        connection.close()
 
-    @cursor_dec
-    def cursor_executemany(self, *args, **kwargs):
-        kwargs['cursor'].executemany(*args)
+    @staticmethod
+    def _execute(cursor, query, *args):
+        if args:
+            cursor.executemany(query, *args)
+        else:
+            cursor.execute(query)
+
+    def execute_query(self, query, *args):
+        connection = self.create_connection()
+        cursor = connection.cursor()
+        self._execute(cursor, query, *args)
+        self._store_commit_close(connection, cursor)

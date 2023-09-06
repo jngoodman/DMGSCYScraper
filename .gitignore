@@ -151,3 +151,5 @@ cython_debug/
 .idea/
 
 .raw_http_content.txt
+
+.db

@@ -1,9 +1,9 @@
-from src.handle_html.constants import BAND_COLLECTIONS_PATH
+from src.handle_html.constants import HTML_KEYS
 from src.handle_html.get_web_html_data import GetHTML
 from os import path, remove
 
 
-def check_for_local_data(path_=BAND_COLLECTIONS_PATH):
+def check_for_local_data(path_=HTML_KEYS['band_collections']):
     """Checks for existing locally stored data. Otherwise, creates the data. Intended for use with stored HTML."""
     if path.isfile(path_):
         prompt_for_new_data()
@@ -17,7 +17,7 @@ def create_local_data():
     get_html.save_html()
 
 
-def remove_local_data(path_=BAND_COLLECTIONS_PATH):
+def remove_local_data(path_=HTML_KEYS['band_collections']):
     remove(path_)
 
 

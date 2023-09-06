@@ -9,6 +9,9 @@ requests = "*"
 beautifulsoup4 = "*"
 pandas = "*"
 
+[scripts]
+start="py main.py"
+
 [dev-packages]
 
 [requires]
