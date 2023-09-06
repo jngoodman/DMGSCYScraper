@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from src.handle_html.constants import HTML_KEYS
+from src.pull_html.constants import HTML_KEYS
 
 
 class ReadHTML:

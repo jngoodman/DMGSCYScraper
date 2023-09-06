@@ -1,12 +1,12 @@
-from src.handle_html import ReadHTML, BASE_URL
-from src.data_service.constants import BandCollectionsStrings
+from src.pull_html import ReadHTML, BASE_URL
+from src.data_services.constants import BandCollectionsStrings
 
 
 class HTMLService:
-    _html_handler: ReadHTML
+    _html_reader: ReadHTML
 
     def __init__(self, html_key: str):
-        self._html_handler = ReadHTML(html_key)
+        self._html_reader = ReadHTML(html_key)
 
     @staticmethod
     def get_text_from_element_list(element_list):
@@ -30,21 +30,21 @@ class HTMLService:
         return url_list
 
 
-class BandCollectionsService(HTMLService):
+class BandCollectionsHTMLService(HTMLService):
 
     def __init__(self, html_key: str = 'band_collections'):
         super().__init__(html_key)
 
     def return_band_names(self):
-        html_handler = self._html_handler
-        element_list = html_handler.retrieve_html_list_by_class(tag=BandCollectionsStrings.ELEMENT_TAG,
-                                                                class_=BandCollectionsStrings.ELEMENT_CLASS)
+        html_reader = self._html_reader
+        element_list = html_reader.retrieve_html_list_by_class(tag=BandCollectionsStrings.ELEMENT_TAG,
+                                                               class_=BandCollectionsStrings.ELEMENT_CLASS)
         return self.get_text_from_element_list(element_list)
 
     def return_band_urls(self):
-        html_handler = self._html_handler
-        element_list = html_handler.retrieve_html_list_by_class(tag=BandCollectionsStrings.ELEMENT_TAG,
-                                                                class_=BandCollectionsStrings.ELEMENT_CLASS)
+        html_reader = self._html_reader
+        element_list = html_reader.retrieve_html_list_by_class(tag=BandCollectionsStrings.ELEMENT_TAG,
+                                                               class_=BandCollectionsStrings.ELEMENT_CLASS)
         return self.get_urls_from_element_list(element_list, tag=BandCollectionsStrings.URL_TAG,
                                                partial=True, base_url=BASE_URL)
 
