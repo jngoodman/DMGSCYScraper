@@ -21,7 +21,7 @@ class HandleDatabase:
         query: str = self._get_query_from_file(query_key)
         connection_manager = self._connection
         connection_manager.execute_query(query, *args)
-        self._run_options(query, connection_manager)
+        return self._run_options(query, connection_manager)
 
     def delete_database_file_on_disk(self):
         user_response = input("This will delete the database on disk. Do you want to do this? (Y/N). ").lower()
@@ -44,4 +44,4 @@ class HandleDatabase:
     def _run_options(self, query, connection_manager):
         cursor_data = connection_manager.temp_cursor_data
         self._print_query_cursor(query, cursor_data)
-        self._return_cursor(cursor_data)
+        return self._return_cursor(cursor_data)
