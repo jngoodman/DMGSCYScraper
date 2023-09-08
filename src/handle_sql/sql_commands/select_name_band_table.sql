@@ -1,0 +1,1 @@
+SELECT band FROM bands;

@@ -1,5 +1,5 @@
 from src import HandleDatabase, GetHTML, Queries, HTML_KEYS, DMGSCY_PATH, BandCollectionsHTMLService, \
-    BAND_COLLECTIONS_URL, BASE_URL, BandCollectionsDatabaseService, Queries
+    BAND_COLLECTIONS_URL, BandCollectionsDatabaseService, CustomQueries
 from os import path, makedirs
 
 
@@ -27,10 +27,14 @@ def test_bands_table(_print: bool):
     manage_database.delete_database_file_on_disk()
 
 
-def test_merch_table(_print: bool):
+def test_merch_table():
     test = BandCollectionsDatabaseService(DMGSCY_PATH)
-    test.get_url_by_band(query_key=Queries.SELECT_BAND_TABLE)
     pass
+
+
+def test_write_sql():
+    CustomQueries().create_query_file('get_row_from_band', 'Green Day')
+    CustomQueries().create_query_file('create_merch_table', 'Green Day')
 
 
 def main():
@@ -40,7 +44,10 @@ def main():
         test_bands_table(_print=True)
     user_input = input("DEVELOPMENT. Would you like to test a merch table? (Y/N): ").lower()
     if user_input == 'y':
-        test_merch_table(_print=True)
+        test_merch_table()
+    user_input = input("DEVELOPMENT. Would you like to test custom queries? (Y/N): ").lower()
+    if user_input == 'y':
+        test_write_sql()
 
 
 if __name__ == "__main__":

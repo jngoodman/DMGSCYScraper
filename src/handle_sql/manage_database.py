@@ -2,6 +2,11 @@ from src.handle_sql.manage_connection import ManageConnection
 from os import remove
 
 
+def get_query_from_file(query_key):
+    with open(query_key, 'r') as file:
+        return file.read()
+
+
 class HandleDatabase:
     _options: dict
     _database_file: str
@@ -12,13 +17,8 @@ class HandleDatabase:
         self._connection = ManageConnection(self._database_file)
         self._options = kwargs
 
-    @staticmethod
-    def _get_query_from_file(query_key):
-        with open(query_key, 'r') as file:
-            return file.read()
-
     def run_command(self, query_key: str, *args):
-        query: str = self._get_query_from_file(query_key)
+        query: str = get_query_from_file(query_key)
         connection_manager = self._connection
         connection_manager.execute_query(query, *args)
         return self._run_options(query, connection_manager)
