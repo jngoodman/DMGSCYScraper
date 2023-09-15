@@ -1,5 +1,5 @@
 from src import HandleDatabase, GetHTML, Queries, DMGSCY_PATH, BandCollectionsHTMLService, \
-    BAND_COLLECTIONS_URL, CustomQueries, SQLService, BAND_COLLECTIONS_FILENAME, gen_html_filename
+    BAND_COLLECTIONS_URL, CustomQueries, SQLService, BAND_COLLECTIONS_FILENAME, gen_html_filename, BandMerchHTMLService
 from os import path, makedirs
 
 
@@ -38,6 +38,9 @@ def test_get_merch_html():
     url = SQLService(database_file=DMGSCY_PATH).get_url_by_band('Green Day')
     html = GetHTML(url=url, file_name=gen_html_filename('Green Day'))
     html.check_if_file_exists()
+    print(BandMerchHTMLService(band_name='Green Day').return_product_names())
+    print(BandMerchHTMLService(band_name='Green Day').return_product_prices())
+    print(BandMerchHTMLService(band_name='Green Day').return_product_images())
 
 
 def main():

@@ -1,12 +1,12 @@
-from src.pull_html import ReadHTML, BASE_URL
-from src.data_services.constants import BandCollectionsStrings
+from src.pull_html import ReadHTML, BASE_URL, gen_html_filename
+from src.data_services.constants import BandCollectionsStrings, BandMerchStrings
 
 
 class HTMLService:
     _html_reader: ReadHTML
 
-    def __init__(self, html_key: str):
-        self._html_reader = ReadHTML(html_key)
+    def __init__(self, file_name: str):
+        self._html_reader = ReadHTML(file_name)
 
     @staticmethod
     def get_text_from_element_list(element_list):
@@ -58,3 +58,40 @@ class BandCollectionsHTMLService(HTMLService):
         for name, url in self.return_names_urls_dict().items():
             sequence.append([name, url])
         return sequence
+
+
+class BandMerchHTMLService(HTMLService):
+
+    def __init__(self, band_name: str):
+        super().__init__(file_name=gen_html_filename(band_name))
+
+    def return_product_names(self):
+        html_reader = self._html_reader
+        element_list = html_reader.retrieve_html_list_by_class(tag=BandMerchStrings.NAME_TAG,
+                                                               class_=BandMerchStrings.NAME_CLASS)
+        return self.get_text_from_element_list(element_list)
+
+    def return_product_prices(self):
+        html_reader = self._html_reader
+        element_list = html_reader.retrieve_html_list_by_class(tag=BandMerchStrings.IMAGE_PRICE_TAG,
+                                                               class_=BandMerchStrings.PRICE_CLASS)
+        return self.get_text_from_element_list(element_list)
+
+    def return_product_images(self):
+        html_reader = self._html_reader
+        element_list = html_reader.retrieve_html_list_by_class(tag=BandMerchStrings.IMAGE_PRICE_TAG,
+                                                               class_=BandMerchStrings.IMAGE_CLASS)
+        image_list = []
+        for element in element_list:
+            image_data = element.find('noscript')
+            image_src = image_data.find('img')['src']
+            image_list.append(image_src)
+        return image_list
+
+
+
+
+
+
+
+
