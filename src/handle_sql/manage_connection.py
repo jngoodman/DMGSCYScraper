@@ -1,4 +1,14 @@
-from sqlite3 import connect
+from sqlite3 import connect, OperationalError
+
+
+def _catch_operational_error(func):
+    def try_func(*args):
+        try:
+            func(*args)
+        except OperationalError:
+            print("ERROR: SQLite operational error.")
+
+    return try_func
 
 
 class ManageConnection:
@@ -32,6 +42,7 @@ class ManageConnection:
         else:
             cursor.execute(query)
 
+    @_catch_operational_error
     def execute_query(self, query, *args):
         connection = self.create_connection()
         cursor = connection.cursor()

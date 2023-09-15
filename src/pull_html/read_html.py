@@ -1,13 +1,13 @@
 from bs4 import BeautifulSoup
-from src.pull_html.constants import HTML_KEYS
+from src.pull_html.constants import BASE_PATH
 
 
 class ReadHTML:
     _html_file: str
     _options: dict
 
-    def __init__(self, html_key: str):
-        self._html_file = HTML_KEYS[html_key]
+    def __init__(self, file_name: str):
+        self._html_file = f"{BASE_PATH}{file_name}"
         self.html_element_list = []
 
     def get_html_binary(self):

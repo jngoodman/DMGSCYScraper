@@ -10,5 +10,7 @@ class Queries:
     SELECT_NAME_BAND_TABLE = r"src/handle_sql/sql_commands/select_name_band_table.sql"
 
 
-QueryBases = {"get_row_from_band": r"src/handle_sql/sql_commands/partial_bases/get_row_from_band.sql",
-              "create_merch_table": r"src/handle_sql/sql_commands/partial_bases/create_merch_table.sql"}
+QueryBases = {"get_row_from_band": r"src/handle_sql/sql_commands/merch_table_partials/get_row_from_band.sql",
+              "create_merch_table": r"src/handle_sql/sql_commands/merch_table_partials/create_merch_table.sql",
+              "select_merch_table": r"src/handle_sql/sql_commands/merch_table_partials/select_merch_table.sql",
+              "drop_merch_table": r"src/handle_sql/sql_commands/merch_table_partials/drop_merch_table.sql"}

@@ -32,8 +32,8 @@ class HTMLService:
 
 class BandCollectionsHTMLService(HTMLService):
 
-    def __init__(self, html_key: str = 'band_collections'):
-        super().__init__(html_key)
+    def __init__(self, file_name: str = 'band_collections.txt'):
+        super().__init__(file_name)
 
     def return_band_names(self):
         html_reader = self._html_reader
