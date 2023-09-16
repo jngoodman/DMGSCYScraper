@@ -18,6 +18,7 @@ class HandleDatabase:
         self._options = kwargs
 
     def run_command(self, query_path: str, *args):
+        print(query_path)
         query: str = get_query_from_file(query_path)
         connection_manager = self._connection
         connection_manager.execute_query(query, *args)
@@ -27,7 +28,7 @@ class HandleDatabase:
         remove(self._database_file)
 
     def _print_query_cursor(self, query, cursor_data):
-        if "print" in self._options and self._options["print"] == True:
+        if "print_" in self._options and self._options["print_"] == True:
             print(f"QUERY: {query}")
             if cursor_data:
                 print(f"CURSOR_DATA: {cursor_data}")

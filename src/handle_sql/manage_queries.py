@@ -1,5 +1,5 @@
 from src.handle_sql.constants import Queries, CUSTOM_COMMANDS_PATH
-from src.handle_sql.manage_database import HandleDatabase, get_query_from_file
+from src.handle_sql.manage_sql_database import HandleDatabase, get_query_from_file
 from os import path
 from re import search
 
