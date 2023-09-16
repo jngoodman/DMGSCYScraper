@@ -14,3 +14,4 @@ class Queries:
         CREATE_MERCH_TABLE = r"src/handle_sql/sql_commands/merch_table_partials/create_merch_table.sql"
         SELECT_MERCH_TABLE = r"src/handle_sql/sql_commands/merch_table_partials/select_merch_table.sql"
         DROP_MERCH_TABLE = r"src/handle_sql/sql_commands/merch_table_partials/drop_merch_table.sql"
+        ADD_TO_MERCH_TABLE = r"src/handle_sql/sql_commands/merch_table_partials/add_to_merch_table.sql"
