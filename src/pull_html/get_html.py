@@ -3,10 +3,6 @@ from os import path, remove
 from src.pull_html.constants import BASE_PATH
 
 
-def gen_html_filename(band: str):
-    return f"{band.lower()}.txt"
-
-
 class GetHTML:
     _url: str
     _html_path: str

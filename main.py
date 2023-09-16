@@ -1,5 +1,6 @@
 from src import HandleDatabase, GetHTML, Queries, DMGSCY_PATH, BandCollectionsHTMLService, \
-    BAND_COLLECTIONS_URL, CustomQueries, SQLService, BAND_COLLECTIONS_FILENAME, gen_html_filename, BandMerchHTMLService
+    BAND_COLLECTIONS_URL, CustomQueries, BandCollectionsSQLService, BandMerchSQLService, BAND_COLLECTIONS_FILENAME, \
+    gen_html_filename, BandMerchHTMLService
 from os import path, makedirs
 
 
@@ -10,50 +11,43 @@ def create_storage_directories():
             makedirs(dir_)
 
 
-def test_bands_table(_print: bool):
-    param_list = [
-        [Queries.CREATE_BAND_TABLE],
-        [Queries.ADD_TO_BAND_TABLE, BandCollectionsHTMLService().return_names_urls_list()],
-        [Queries.SELECT_BAND_TABLE],
-    ]
-    html = GetHTML(url=BAND_COLLECTIONS_URL, file_name=BAND_COLLECTIONS_FILENAME)
-    html.check_if_file_exists()
-    manage_database = HandleDatabase(database_file=DMGSCY_PATH, print=_print)
-    for list_ in param_list:
-        manage_database.run_command(*[param for param in list_])
-    manage_database.delete_database_file_on_disk()
+def test_bands_table(print_: bool):
+    html_service = BandCollectionsHTMLService()
+    html_service.html_getter.check_if_file_exists()
+    db_service = BandCollectionsSQLService(database_file=DMGSCY_PATH, print=print_)
+    db_service.create_band_table()
+    db_service.fill_band_table()
+    db_service.select_band_table()
 
 
-def test_merch_table(_print: bool):
-    manage_database = HandleDatabase(database_file=DMGSCY_PATH, print=_print)
-    create_merch_path = CustomQueries().call_query_path('create_merch_table', 'Green Day')
-    select_merch_path = CustomQueries().call_query_path('select_merch_table', 'Green Day')
-    drop_merch_path = CustomQueries().call_query_path('drop_merch_table', 'Green Day')
-    manage_database.run_command(create_merch_path)
-    manage_database.run_command(select_merch_path)
-    manage_database.run_command(drop_merch_path)
+def test_merch_table(print_: bool):
+    db_merch_service = BandMerchSQLService(database_file=DMGSCY_PATH, print=print_, band_name='Green Day')
+    db_merch_service.create_merch_table()
+    db_merch_service.select_merch_table()
+    db_merch_service.drop_merch_table()
 
 
-def test_get_merch_html():
-    url = SQLService(database_file=DMGSCY_PATH).get_url_by_band('Green Day')
-    html = GetHTML(url=url, file_name=gen_html_filename('Green Day'))
-    html.check_if_file_exists()
-    print(BandMerchHTMLService(band_name='Green Day').return_product_names())
-    print(BandMerchHTMLService(band_name='Green Day').return_product_prices())
-    print(BandMerchHTMLService(band_name='Green Day').return_product_images())
+def test_get_merch_html(print_: bool):
+    db_service = BandCollectionsSQLService(database_file=DMGSCY_PATH, print=print_)
+    url = db_service.get_url_by_band('Green Day')
+    html_service = BandMerchHTMLService('Green Day', url)
+    html_service.html_getter.check_if_file_exists()
+    print(html_service.return_product_names())
+    print(html_service.return_product_prices())
+    print(html_service.return_product_images())
 
 
 def main():
     create_storage_directories()
     user_input = input("DEVELOPMENT. Would you like to test the bands table? (Y/N): ").lower()
     if user_input == 'y':
-        test_bands_table(_print=True)
+        test_bands_table(print_=True)
     user_input = input("DEVELOPMENT. Would you like to test a merch table? (Y/N): ").lower()
     if user_input == 'y':
-        test_merch_table(_print=True)
+        test_merch_table(print_=True)
     user_input = input("DEVELOPMENT. Would you like to test a merch html? (Y/N): ").lower()
     if user_input == 'y':
-        test_get_merch_html()
+        test_get_merch_html(print_=True)
 
 
 if __name__ == "__main__":

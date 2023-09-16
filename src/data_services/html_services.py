@@ -1,12 +1,18 @@
-from src.pull_html import ReadHTML, BASE_URL, gen_html_filename
+from src.pull_html import ReadHTML, BASE_URL, BAND_COLLECTIONS_URL, BAND_COLLECTIONS_FILENAME, \
+    GetHTML
 from src.data_services.constants import BandCollectionsStrings, BandMerchStrings
+
+
+def gen_html_filename(band: str):
+    return f"{band.lower()}.txt"
 
 
 class HTMLService:
     _html_reader: ReadHTML
 
-    def __init__(self, file_name: str):
+    def __init__(self, file_name: str, url: str):
         self._html_reader = ReadHTML(file_name)
+        self.html_getter = GetHTML(url=url, file_name=file_name)
 
     @staticmethod
     def get_text_from_element_list(element_list):
@@ -32,8 +38,8 @@ class HTMLService:
 
 class BandCollectionsHTMLService(HTMLService):
 
-    def __init__(self, file_name: str = 'band_collections.txt'):
-        super().__init__(file_name)
+    def __init__(self, file_name: str = BAND_COLLECTIONS_FILENAME, url: str = BAND_COLLECTIONS_URL):
+        super().__init__(file_name, url)
 
     def return_band_names(self):
         html_reader = self._html_reader
@@ -62,8 +68,10 @@ class BandCollectionsHTMLService(HTMLService):
 
 class BandMerchHTMLService(HTMLService):
 
-    def __init__(self, band_name: str):
-        super().__init__(file_name=gen_html_filename(band_name))
+    def __init__(self, band_name: str, band_url: str):
+        super().__init__(file_name=gen_html_filename(band_name),
+                         url=band_url)
+        self.html_getter = GetHTML(url=band_url, file_name=gen_html_filename(band_name))
 
     def return_product_names(self):
         html_reader = self._html_reader
@@ -87,11 +95,3 @@ class BandMerchHTMLService(HTMLService):
             image_src = image_data.find('img')['src']
             image_list.append(image_src)
         return image_list
-
-
-
-
-
-
-
-

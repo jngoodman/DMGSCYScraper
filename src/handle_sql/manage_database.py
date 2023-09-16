@@ -24,12 +24,7 @@ class HandleDatabase:
         return self._run_options(query, connection_manager)
 
     def delete_database_file_on_disk(self):
-        user_response = input("This will delete the database on disk. Do you want to do this? (Y/N). ").lower()
-        if user_response == 'y':
-            print("Database deleted.")
-            remove(self._database_file)
-        else:
-            print("Deletion aborted.")
+        remove(self._database_file)
 
     def _print_query_cursor(self, query, cursor_data):
         if "print" in self._options and self._options["print"] == True:
