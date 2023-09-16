@@ -15,6 +15,9 @@ from sqlite3 import OperationalError
     > If ticked, just select table. Otherwise, do as before.
     Users should also have a button for each band that lets them:
     > Add to a favourites list.
+    Finally, users should be able to:
+    > Delete data from database (i.e., drop table). <issues warning>
+    > Delete database itself. <issues warning>
     
     Effective way to do this: When user first loads the app, they're prompted to pick their favourite bands from the
     list. These are then saved. On future loads, user can select existing bands or 'add new favourites.'
@@ -75,16 +78,3 @@ def select_collections_table(database_file=DMGSCY_PATH):
     db_service = CollectionsSQLService(database_file)
     db_service.select_bands_table()
 
-
-def main():
-    create_storage_directories()
-    instantiate_collections()
-    populate_collections_from_html()
-    select_collections_table()
-    instantiate_merch_table('Green day')
-    populate_merch_table_from_html('Green day')
-    select_merch_table('green day')
-
-
-if __name__ == "__main__":
-    main()

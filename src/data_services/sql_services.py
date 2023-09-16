@@ -10,26 +10,26 @@ class CollectionsSQLService:
         self._database_handler = HandleDatabase(database_file, return_=return_, **kwargs)
         self._query_handler = CustomQueries(self._database_handler)
 
-    def create_band_table(self):
+    def create_bands_table(self):
         database_handler = self._database_handler
         database_handler.run_command(Queries.CREATE_BAND_TABLE)
 
-    def select_band_table(self):
+    def select_bands_table(self):
         database_handler = self._database_handler
         database_handler.run_command(Queries.SELECT_BAND_TABLE)
 
-    def fill_band_table(self, data: list):
+    def fill_bands_table(self, data: list):
         database_handler = self._database_handler
         database_handler.run_command(Queries.ADD_TO_BAND_TABLE, data)
 
-    def drop_band_table(self):
+    def drop_bands_table(self):
         database_handler = self._database_handler
         database_handler.run_command(Queries.DROP_BAND_TABLE)
 
     def get_url_by_band(self, band_name: str):
         database_handler = self._database_handler
         query_handler = self._query_handler
-        query = query_handler.call_query(Queries.Partial.GET_ROW_FROM_BAND, band_name)
+        query = query_handler.call_query(Queries.Partial.GET_ROW_FROM_BAND, band_name.title())
         url = database_handler.run_command(query)[0][1]
         return url
 
