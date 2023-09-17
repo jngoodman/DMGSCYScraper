@@ -1,4 +1,4 @@
-from sqlite3 import connect, OperationalError
+from sqlite3 import connect, OperationalError, ProgrammingError
 
 
 def _catch_operational_error(func):
@@ -6,7 +6,9 @@ def _catch_operational_error(func):
         try:
             func(*args)
         except OperationalError:
-            print("ERROR: SQLite operational error.")
+            print("ERROR: SQLite operational error. Check table exists.")
+        except ProgrammingError:
+            print("ERROR: SQLite programming error. Check data supplied.")
 
     return try_func
 

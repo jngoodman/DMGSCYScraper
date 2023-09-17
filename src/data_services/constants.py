@@ -1,15 +1,7 @@
-class BandCollectionsStrings:
-    ELEMENT_TAG = 'a'
-    URL_TAG = 'href'
-    ELEMENT_CLASS = 'instant-brand-text-link'
-
-
-class BandMerchStrings:
-    NAME_TAG = 'h3'
-    NAME_CLASS = 'card__title'
-    IMAGE_PRICE_TAG = 'div'
-    IMAGE_CLASS = 'card__image'
-    PRICE_CLASS = 'product-price'
-    IMAGE_ID_TAG = 'img'
-    IMAGE_ID = 'src'
+class HTMLStrings:
+    COLLECTIONS = {'tag': 'a', 'class': 'instant-brand-text-link', 'url': 'href'}
+    PRODUCT_NAME = {'tag': 'h3', 'class': 'card__title'}
+    PRODUCT_IMAGE = {'tag': 'div', 'class': 'card__image', 'image_data': 'noscript',
+                     'image': 'img', 'image_source': 'src'}
+    PRODUCT_PRICE = {'tag': 'div', 'class': 'product-price'}
 

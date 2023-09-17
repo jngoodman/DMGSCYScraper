@@ -1,5 +1,6 @@
 from src.handle_sql import HandleDatabase, CustomQueries, Queries
 from typing import Union
+from src.data_services.html_services import HTMLCollServ, HTMLMerchServ
 
 
 class SQLService:
@@ -47,7 +48,19 @@ class SQLService:
             query = Queries.DROP_BAND_TABLE
         return database_handler.run_command(query)
 
-    def fill_table(self, data: list):
+    def _get_default_fill_data(self):
+        """Get default data by parsing HTML."""
+        if self._band_name:
+            url = self.get_url_from_collections()
+            data = HTMLMerchServ(self._band_name, url).return_names_images_prices_list()
+        else:
+            data = HTMLCollServ().return_names_urls_list()
+        return data
+
+    def fill_table(self, *data: list):
+        """Make possible to insert other list, but otherwise parse relevant HTML for intended function."""
+        if not data:
+            data = self._get_default_fill_data()
         database_handler = self._database_handler
         if self._band_name:
             query = self._query_handler.call_query(Queries.Partial.ADD_TO_MERCH_TABLE, self._band_name)

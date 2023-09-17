@@ -1,6 +1,5 @@
-from src.pull_html import ReadHTML, BASE_URL, BAND_COLLECTIONS_URL, BAND_COLLECTIONS_FILENAME, \
-    GetHTML
-from src.data_services.constants import BandCollectionsStrings, BandMerchStrings
+from src.pull_html import ReadHTML, BASE_URL, COLLECTIONS_URL, COLLECTIONS_FILENAME, GetHTML
+from src.data_services.constants import HTMLStrings
 
 
 def gen_html_filename(band: str):
@@ -9,100 +8,58 @@ def gen_html_filename(band: str):
 
 class HTMLService:
     _html_reader: ReadHTML
+    _html_getter: GetHTML
 
-    def __init__(self, file_name: str, url: str):
+    def __init__(self, file_name: str, file_url: str):
         self._html_reader = ReadHTML(file_name)
-        self.html_getter = GetHTML(url=url, file_name=file_name)
+        self._html_getter = GetHTML(file_name, file_url)
 
-    @staticmethod
-    def get_text_from_element_list(element_list):
-        text_list = []
-        for html in element_list:
-            text_list.append(html.text.strip())
+    def get_html_elements(self, tag: str, class_: str):
+        html_reader = self._html_reader
+        html_elements = html_reader.retrieve_html_list_by_class(tag, class_)
+        return html_elements
+
+    def return_text(self, tag: str, class_: str):
+        html_elements = self.get_html_elements(tag, class_)
+        text_list = [element.text.strip() for element in html_elements]
         return text_list
 
-    @staticmethod
-    def get_urls_from_element_list(element_list: list, **kwargs):
-        """kwargs: partial: bool, tag: str, base_url: str"""
-        url_list = []
-        if 'partial' not in kwargs or kwargs['partial'] == False:
-            for html in element_list:
-                url_list.append(html[kwargs['tag']])
-            return url_list
-        for html in element_list:
-            partial_url = html[kwargs['tag']]
-            full_url = f"{kwargs['base_url']}{partial_url}"
-            url_list.append(full_url)
+
+class HTMLCollServ(HTMLService):
+    html_strings = HTMLStrings.COLLECTIONS
+
+    def __init__(self):
+        super().__init__(COLLECTIONS_FILENAME, COLLECTIONS_URL)
+
+    def return_urls(self, tag=html_strings['tag'], class_=html_strings['class'], url=html_strings['url']):
+        html_elements = self.get_html_elements(tag, class_)
+        url_list = [f"{BASE_URL}{element[url]}" for element in html_elements]
         return url_list
 
-
-class CollectionsHTMLService(HTMLService):
-
-    def __init__(self, file_name: str = BAND_COLLECTIONS_FILENAME, url: str = BAND_COLLECTIONS_URL):
-        super().__init__(file_name, url)
-
-    def return_band_names(self):
-        html_reader = self._html_reader
-        element_list = html_reader.retrieve_html_list_by_class(tag=BandCollectionsStrings.ELEMENT_TAG,
-                                                               class_=BandCollectionsStrings.ELEMENT_CLASS)
-        return self.get_text_from_element_list(element_list)
-
-    def return_band_urls(self):
-        html_reader = self._html_reader
-        element_list = html_reader.retrieve_html_list_by_class(tag=BandCollectionsStrings.ELEMENT_TAG,
-                                                               class_=BandCollectionsStrings.ELEMENT_CLASS)
-        return self.get_urls_from_element_list(element_list, tag=BandCollectionsStrings.URL_TAG,
-                                               partial=True, base_url=BASE_URL)
-
-    def return_names_urls_dict(self):
-        names = self.return_band_names()
-        urls = self.return_band_urls()
-        return dict(zip(names, urls))
-
-    def return_names_urls_list(self):
-        sequence = []
-        for name, url in self.return_names_urls_dict().items():
-            sequence.append([name, url])
-        return sequence
+    def return_names_urls_list(self, tag=html_strings['tag'], class_=html_strings['class'], url=html_strings['url']):
+        url_list = self.return_urls(tag, class_, url)
+        name_list = self.return_text(tag, class_)
+        return zip(name_list, url_list)
 
 
-class MerchHTMLService(HTMLService):
+class HTMLMerchServ(HTMLService):
+    name_strings = HTMLStrings.PRODUCT_NAME
+    image_strings = HTMLStrings.PRODUCT_IMAGE
+    price_strings = HTMLStrings.PRODUCT_PRICE
 
     def __init__(self, band_name: str, band_url: str):
-        super().__init__(file_name=gen_html_filename(band_name),
-                         url=band_url)
-        self.html_getter = GetHTML(url=band_url, file_name=gen_html_filename(band_name))
+        super().__init__(file_name=gen_html_filename(band_name), file_url=band_url)
 
-    def _return_product_names(self):
-        html_reader = self._html_reader
-        element_list = html_reader.retrieve_html_list_by_class(tag=BandMerchStrings.NAME_TAG,
-                                                               class_=BandMerchStrings.NAME_CLASS)
-        return self.get_text_from_element_list(element_list)
-
-    def _return_product_prices(self):
-        html_reader = self._html_reader
-        element_list = html_reader.retrieve_html_list_by_class(tag=BandMerchStrings.IMAGE_PRICE_TAG,
-                                                               class_=BandMerchStrings.PRICE_CLASS)
-        return self.get_text_from_element_list(element_list)
-
-    def _return_product_images(self):
-        html_reader = self._html_reader
-        element_list = html_reader.retrieve_html_list_by_class(tag=BandMerchStrings.IMAGE_PRICE_TAG,
-                                                               class_=BandMerchStrings.IMAGE_CLASS)
-        image_list = []
-        for element in element_list:
-            image_data = element.find('noscript')
-            image_src = image_data.find('img')['src']
-            image_list.append(image_src)
-        return image_list
+    def _parse_image_source(self, tag=image_strings['tag'], class_=image_strings['class']):
+        [data_tag, image_tag, src_tag] = [self.image_strings['image_data'], self.image_strings['image'],
+                                          self.image_strings['image_source']]
+        image_element_list = self.get_html_elements(tag, class_)
+        image_data_list = [element.find(data_tag) for element in image_element_list]
+        image_source_list = [element.find(image_tag)[src_tag] for element in image_data_list]
+        return image_source_list
 
     def return_names_images_prices_list(self):
-        names_images_prices_list = []
-        for item in self._return_product_names():
-            index = self._return_product_names().index(item)
-            names_images_prices_list.append([
-                item,
-                self._return_product_images()[index],
-                self._return_product_prices()[index]
-            ])
-        return names_images_prices_list
+        name_list = self.return_text(self.name_strings['tag'], self.name_strings['class'])
+        price_list = self.return_text(self.price_strings['tag'], self.price_strings['class'])
+        image_list = self._parse_image_source()
+        return zip(name_list, image_list, price_list)
