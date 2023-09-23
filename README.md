@@ -1,11 +1,13 @@
 A web scraper to recover bands and collection URLS from https://damagedsociety.co.uk/pages/band-a-z.
 
+Run main.py then click URL to use.
 
-Currently only the scraper which returns band names and URLs as a dictionary. Interace with via cmd line.
+To add:
+> Favourites
+> Improved appearance
+> Locally stored images
+> Lets you know when new things added to favourites (chron)
 
-
-Goals:
-
-1) Store all bands and URLs in a SQL .db.
-2) Allow users to add valid dimension tables to schema to store the collections of band merchandise for their bands of interest. Dimension tables will contain names, image URLs and page URLs for each entry in the collection.
-3) Create flask interface.
+To change:
+> Use SQL commands from memory
+> Remove HTML after use
