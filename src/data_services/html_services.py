@@ -13,6 +13,7 @@ class HTMLService:
     def __init__(self, file_name: str, file_url: str):
         self._html_reader = ReadHTML(file_name)
         self._html_getter = GetHTML(file_name, file_url)
+        self._html_getter.overwrite_html()
 
     def get_html_elements(self, tag: str, class_: str):
         html_reader = self._html_reader
@@ -24,17 +25,17 @@ class HTMLService:
         text_list = [element.text.strip() for element in html_elements]
         return text_list
 
+    def return_urls(self, tag, class_, url):
+        html_elements = self.get_html_elements(tag, class_)
+        url_list = [f"{BASE_URL}{element[url]}" for element in html_elements]
+        return url_list
+
 
 class HTMLCollServ(HTMLService):
     html_strings = HTMLStrings.COLLECTIONS
 
     def __init__(self):
         super().__init__(COLLECTIONS_FILENAME, COLLECTIONS_URL)
-
-    def return_urls(self, tag=html_strings['tag'], class_=html_strings['class'], url=html_strings['url']):
-        html_elements = self.get_html_elements(tag, class_)
-        url_list = [f"{BASE_URL}{element[url]}" for element in html_elements]
-        return url_list
 
     def return_names_urls_list(self, tag=html_strings['tag'], class_=html_strings['class'], url=html_strings['url']):
         url_list = self.return_urls(tag, class_, url)
@@ -46,6 +47,7 @@ class HTMLMerchServ(HTMLService):
     name_strings = HTMLStrings.PRODUCT_NAME
     image_strings = HTMLStrings.PRODUCT_IMAGE
     price_strings = HTMLStrings.PRODUCT_PRICE
+    url_strings = HTMLStrings.PRODUCT_URL
 
     def __init__(self, band_name: str, band_url: str):
         super().__init__(file_name=gen_html_filename(band_name), file_url=band_url)
@@ -60,6 +62,8 @@ class HTMLMerchServ(HTMLService):
 
     def return_names_images_prices_list(self):
         name_list = self.return_text(self.name_strings['tag'], self.name_strings['class'])
+        url_list = self.return_urls(self.url_strings['tag'], self.url_strings['class'], self.url_strings['url'])
+        print(url_list)
         price_list = self.return_text(self.price_strings['tag'], self.price_strings['class'])
         image_list = self._parse_image_source()
-        return zip(name_list, image_list, price_list)
+        return zip(name_list, url_list, image_list, price_list)

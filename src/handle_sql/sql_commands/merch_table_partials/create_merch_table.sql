@@ -3,6 +3,7 @@ IF NOT EXISTS
 `{}` (
 id INTEGER PRIMARY KEY,
 item TEXT NOT NULL,
+item_url TEXT NOT NULL,
 image_url TEXT NOT NULL,
 price TEXT NOT NULL,
 UNIQUE(item)

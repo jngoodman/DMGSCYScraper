@@ -8,17 +8,16 @@ def get_query_from_file(query_path):
 
 
 class HandleDatabase:
-    _options: dict
+    options: dict
     _database_file: str
     _connection: ManageConnection
 
     def __init__(self, database_file: str, **kwargs):
         self._database_file = database_file
         self._connection = ManageConnection(self._database_file)
-        self._options = kwargs
+        self.options = kwargs
 
     def run_command(self, query_path: str, *args):
-        print(query_path)
         query: str = get_query_from_file(query_path)
         connection_manager = self._connection
         connection_manager.execute_query(query, *args)
@@ -28,13 +27,13 @@ class HandleDatabase:
         remove(self._database_file)
 
     def _print_query_cursor(self, query, cursor_data):
-        if "print_" in self._options and self._options["print_"] == True:
+        if "print_" in self.options and self.options["print_"] == True:
             print(f"QUERY: {query}")
             if cursor_data:
                 print(f"CURSOR_DATA: {cursor_data}")
 
     def _return_cursor(self, cursor_data):
-        if "return_" in self._options and self._options["return_"] == True:
+        if "return_" in self.options and self.options["return_"] == True:
             return cursor_data
 
     def _run_options(self, query, connection_manager):

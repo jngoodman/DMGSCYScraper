@@ -13,13 +13,15 @@ class SQLService:
 
     def __init__(self, database_file, **kwargs):
         self._options = kwargs
-        self._database_handler = HandleDatabase(database_file,
-                                                return_=kwargs['return_'],
-                                                print_=kwargs['print_'])
+        self._database_handler = HandleDatabase(database_file)
         self._band_name = None
         self.construct_conditional_arguments()
 
     def construct_conditional_arguments(self):
+        if 'print_' in self._options:
+            self._database_handler.options.update({'print_': True})
+        if 'return_' in self._options:
+            self._database_handler.options.update({'return_': True})
         if 'band_name' in self._options:
             self._band_name = self._options['band_name']
             self._query_handler = CustomQueries(self._database_handler)

@@ -1,0 +1,10 @@
+<!doctype html>
+  <table border = 1>
+    {% for item in data %}
+
+    <tr>
+        <th><a href="collection/{{item[1]}}">{{ item[1] }}&nbsp;</a></th>
+    </tr>
+
+    {% endfor %}
+ </table>

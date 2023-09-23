@@ -7,7 +7,7 @@ class GetHTML:
     _url: str
     _html_path: str
 
-    def __init__(self, url: str, file_name: str):
+    def __init__(self, file_name: str, url: str):
         """Acceptable html_keys in HTML_KEYS."""
         self._url = url
         self._html_path = f"{BASE_PATH}{file_name}"

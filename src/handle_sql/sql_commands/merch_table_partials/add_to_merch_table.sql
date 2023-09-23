@@ -1,3 +1,3 @@
 INSERT OR IGNORE INTO
-`{}` (item, image_url, price)
-VALUES(?, ?, ?);
+`{}` (item, item_url, image_url, price)
+VALUES(?, ?, ?, ?);
