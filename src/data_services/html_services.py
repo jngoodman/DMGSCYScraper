@@ -63,7 +63,6 @@ class HTMLMerchServ(HTMLService):
     def return_names_images_prices_list(self):
         name_list = self.return_text(self.name_strings['tag'], self.name_strings['class'])
         url_list = self.return_urls(self.url_strings['tag'], self.url_strings['class'], self.url_strings['url'])
-        print(url_list)
         price_list = self.return_text(self.price_strings['tag'], self.price_strings['class'])
         image_list = self._parse_image_source()
         return zip(name_list, url_list, image_list, price_list)
