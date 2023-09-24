@@ -1,0 +1,7 @@
+CREATE TABLE
+IF NOT EXISTS
+favourites (
+id INTEGER PRIMARY KEY,
+band TEXT NOT NULL,
+UNIQUE(band)
+);

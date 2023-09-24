@@ -1,10 +1,75 @@
 <!doctype html>
-  <table border = 1>
-    {% for item in data %}
+<head>
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    <tr>
-        <th><a href="collection/{{item[1]}}">{{ item[1] }}&nbsp;</a></th>
-    </tr>
+.row {
+  margin-left:-5px;
+  margin-right:-5px;
+}
 
-    {% endfor %}
- </table>
+.column {
+  float: left;
+  width: 50%;
+  padding: 5px;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.align_right {
+  float: right;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 50%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: center;
+  padding: 6px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+</style>
+</head>
+<div class='row'>
+    <div class='column'>
+        <table class='align_right'>
+            <tr>
+                <th colspan="2">Artists</th>
+            </tr>
+            {% for item in data %}
+            <tr>
+                <td><a href="collection/{{item[1]}}">{{ item[1] }}&nbsp;</a></td>
+                <td><button><a href="favourites/{{item[1]}}">Favourite</a></button></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class='column'>
+        <table>
+            <tr>
+                <th colspan="2">Favourites</th>
+            </tr>
+            {% for item in favourites %}
+            <tr>
+                <td><a href="collection/{{item[1]}}">{{ item[1] }}&nbsp;</a></td>
+                <td><button><a href="favourites_remove/{{item[1]}}">Remove</a></button></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+

@@ -1,9 +1,8 @@
 from src import application
 
-app = application.create_app()
-
 
 def main():
+    app = application.create_app()
     app.run()
 
 

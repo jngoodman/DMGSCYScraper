@@ -1,4 +1,5 @@
 from src.handle_sql.manage_connection import ManageConnection
+from src.handle_sql.constants import Queries
 from os import remove
 
 
@@ -17,8 +18,9 @@ class HandleDatabase:
         self._connection = ManageConnection(self._database_file)
         self.options = kwargs
 
-    def run_command(self, query_path: str, *args):
-        query: str = get_query_from_file(query_path)
+    def run_command(self, query: str, *args):
+        if Queries.ROOT in query:
+            query: str = get_query_from_file(query)
         connection_manager = self._connection
         connection_manager.execute_query(query, *args)
         return self._run_options(query, connection_manager)

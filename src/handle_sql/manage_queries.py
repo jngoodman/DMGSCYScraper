@@ -14,7 +14,7 @@ class CustomQueries:
         (1) Row selection from band name: USER INPUTS f"'{band_name}'" to SELECT query.
         (2) Merch table creation from band name. USER INPUTS f"'{band_name}'" to CREATE TABLE query."""
         self._database_handler = database_handler
-        self._allowed_inputs = self._database_handler.run_command(query_path=Queries.SELECT_NAME_BAND_TABLE)
+        self._allowed_inputs = self._database_handler.run_command(query=Queries.SELECT_NAME_BAND_TABLE)
 
     @staticmethod
     def _get_file_name(partial_query_path: str, variable_name: str):
