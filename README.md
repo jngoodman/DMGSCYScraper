@@ -8,8 +8,3 @@ To add:
 > Locally stored images
 > 
 > Lets you know when new things added to favourites (chron)
-
-To change:
-> Use SQL commands from memory
-> 
-> Remove HTML after use
