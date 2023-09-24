@@ -3,8 +3,6 @@ A web scraper to recover bands and collection URLS from https://damagedsociety.c
 Run main.py then click URL to use.
 
 To add:
-> Favourites
-> 
 > Improved appearance
 > 
 > Locally stored images
