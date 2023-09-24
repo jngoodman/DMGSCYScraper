@@ -40,21 +40,21 @@ class SQLService:
     def create_table(self):
         database_handler = self._database_handler
         query_dict = {'favourites': "Queries.CREATE_FAVOURITES_TABLE",
-                      'merch': "self._query_handler.call_query(Queries.Partial.CREATE_MERCH_TABLE, self._band_name)",
+                      'merch': "self._query_handler.call_query(Queries.CREATE_MERCH_TABLE, self._band_name)",
                       'collections': "Queries.CREATE_BAND_TABLE"}
         return database_handler.run_command(eval(query_dict[self.run_mode]))
 
     def select_table(self):
         database_handler = self._database_handler
         query_dict = {'favourites': "Queries.SELECT_FAVOURITES_TABLE",
-                      'merch': "self._query_handler.call_query(Queries.Partial.SELECT_MERCH_TABLE, self._band_name)",
+                      'merch': "self._query_handler.call_query(Queries.SELECT_MERCH_TABLE, self._band_name)",
                       'collections': "Queries.SELECT_BAND_TABLE"}
         return database_handler.run_command(eval(query_dict[self.run_mode]))
 
     def drop_table(self):
         database_handler = self._database_handler
         query_dict = {'favourites': "Queries.DROP_FAVOURITES_TABLE",
-                      'merch': "self._query_handler.call_query(Queries.Partial.DROP_MERCH_TABLE, self._band_name)",
+                      'merch': "self._query_handler.call_query(Queries.DROP_MERCH_TABLE, self._band_name)",
                       'collections': "Queries.DROP_BAND_TABLE"}
         return database_handler.run_command(eval(query_dict[self.run_mode]))
 
@@ -76,7 +76,7 @@ class SQLService:
             data = self._get_default_fill_data()
         database_handler = self._database_handler
         query_dict = {'favourites': "Queries.ADD_TO_FAVOURITES_TABLE",
-                      'merch': "self._query_handler.call_query(Queries.Partial.ADD_TO_MERCH_TABLE, self._band_name)",
+                      'merch': "self._query_handler.call_query(Queries.ADD_TO_MERCH_TABLE, self._band_name)",
                       'collections': "Queries.ADD_TO_BAND_TABLE"}
         return database_handler.run_command(eval(query_dict[self.run_mode]), data)
 
@@ -88,10 +88,13 @@ class SQLService:
         query = get_query_from_file(Queries.REMOVE_FROM_FAVOURITES_TABLE).format(local_band_name)
         return database_handler.run_command(query)
 
+    def delete_database(self):
+        self._database_handler.delete_database_file_on_disk()
+
     def get_url_from_collections(self):
         if self.run_mode == 'merch':
             database_handler = self._database_handler
-            query = self._query_handler.call_query(Queries.Partial.GET_ROW_FROM_BAND, self._band_name)
+            query = self._query_handler.call_query(Queries.GET_ROW_FROM_BAND, self._band_name)
             url = database_handler.run_command(query)[0][1]
             return url
         print("This function requires SQLService to be in merch mode. Please instantiate with a band name.")

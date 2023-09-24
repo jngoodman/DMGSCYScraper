@@ -5,8 +5,3 @@ class HTMLStrings:
     PRODUCT_IMAGE = {'tag': 'div', 'class': 'card__image', 'image_data': 'noscript',
                      'image': 'img', 'image_source': 'src'}
     PRODUCT_PRICE = {'tag': 'div', 'class': 'product-price'}
-
-
-class Dirs:
-    HTML_FILES = r"src/pull_html/html_files/"
-    SQL_FILES = r"src/handle_sql/sql_database/"

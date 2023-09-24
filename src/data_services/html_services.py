@@ -1,9 +1,17 @@
-from src.pull_html import ReadHTML, BASE_URL, COLLECTIONS_URL, COLLECTIONS_FILENAME, GetHTML
+from src.pull_html import BASE_URL, COLLECTIONS_URL, COLLECTIONS_FILENAME, HTML_FILES, ReadHTML, GetHTML
 from src.data_services.constants import HTMLStrings
+from os import remove
+from glob import glob
 
 
 def gen_html_filename(band: str):
     return f"{band.lower()}.txt"
+
+
+def clear_local_html(folder: str = HTML_FILES):
+    files = glob(f"{folder}*")
+    for file in files:
+        remove(file)
 
 
 class HTMLService:

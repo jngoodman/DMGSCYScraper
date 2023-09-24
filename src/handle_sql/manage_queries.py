@@ -1,7 +1,5 @@
-from src.handle_sql.constants import Queries, CUSTOM_COMMANDS_PATH
+from src.handle_sql.constants import Queries
 from src.handle_sql.manage_sql_database import HandleDatabase, get_query_from_file
-from os import path
-from re import search
 
 
 class CustomQueries:
@@ -16,26 +14,12 @@ class CustomQueries:
         self._database_handler = database_handler
         self._allowed_inputs = self._database_handler.run_command(query=Queries.SELECT_NAME_BAND_TABLE)
 
-    @staticmethod
-    def _get_file_name(partial_query_path: str, variable_name: str):
-        file_name_prefix = search('merch_table_partials/(.*).sql', partial_query_path).group(1)
-        return f"{CUSTOM_COMMANDS_PATH}{file_name_prefix}_{variable_name.lower()}"
-
-    def _create_query_file(self, partial_query_path: str, variable_name: str, file_path: str):
+    def call_query(self, partial_query_path: str, variable_name: str):
         allowed_inputs = [tuple_[0].lower() for tuple_ in self._allowed_inputs]
         partial_query = get_query_from_file(partial_query_path)
         if variable_name.lower() in allowed_inputs:
             full_query = partial_query.format(variable_name)
-            file_name = file_path
-            with open(f'{file_name}.sql', 'w') as file:
-                file.write(full_query)
-            return file_name
-        print("Invalid variable name.")
-
-    def call_query(self, partial_query_path: str, variable_name: str):
-        file_name = self._get_file_name(partial_query_path, variable_name)
-        if not path.exists(file_name):
-            self._create_query_file(partial_query_path, variable_name, file_name)
-        return f'{file_name}.sql'
+            return full_query
+        print("Band name not found in bands database.")
 
 

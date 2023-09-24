@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from src.pull_html.constants import BASE_PATH
+from src.pull_html.constants import HTML_FILES
 
 
 class ReadHTML:
@@ -7,7 +7,7 @@ class ReadHTML:
     _options: dict
 
     def __init__(self, file_name: str):
-        self._html_file = f"{BASE_PATH}{file_name}"
+        self._html_file = f"{HTML_FILES}{file_name}"
         self.html_element_list = []
 
     def get_html_binary(self):

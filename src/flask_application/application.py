@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for
-from src.data_services import SQLService, create_storage_directories
+from src.data_services import SQLService, create_storage_directories, clear_local_html
 from src.handle_sql import DMGSCY_PATH
 
 
@@ -69,6 +69,17 @@ def create_app():
     def remove_from_favourites(name: str):
         service = SQLService(database_file=DMGSCY_PATH, return_=True, favourites=True)
         service.remove_from_table(name)
+        return redirect(url_for('main_page'))
+
+    @app.route("/delete_database")
+    def delete_database():
+        service = SQLService(database_file=DMGSCY_PATH)
+        service.delete_database()
+        return redirect(url_for('main_page'))
+
+    @app.route("/clear_html")
+    def clear_html():
+        clear_local_html()
         return redirect(url_for('main_page'))
 
     return app
