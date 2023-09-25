@@ -1,12 +1,27 @@
 <!doctype html>
+<head>
+<style>
+table {
+  border-collapse: collapse;
+  border-left: none;
+  border-right: none;
+}
+th, td {
+  border-left: none;
+  border-right: none;
+  text-align: center;
+  padding: 6px;
+  background-color: #F1F1F1;
+}
+</style>
+</head>
   <table border = 1>
     {% for item in data %}
 
     <tr>
-        <th>{{ item[1] }}</th>
+        <th><pre>{{ item[1] }}
+{{ item[4] }}</pre></th>
         <td><a href ="{{ item[2] }}"><img src="{{ item[3] }}" alt="{{ item[1] }}" width="206" height="300"></a></td>
-        <td>{{ item[4] }}</td>
     </tr>
-
     {% endfor %}
  </table>
