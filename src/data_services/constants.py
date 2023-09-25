@@ -5,3 +5,6 @@ class HTMLStrings:
     PRODUCT_IMAGE = {'tag': 'div', 'class': 'card__image', 'image_data': 'noscript',
                      'image': 'img', 'image_source': 'src'}
     PRODUCT_PRICE = {'tag': 'div', 'class': 'product-price'}
+
+
+TEMP = r"temp/"

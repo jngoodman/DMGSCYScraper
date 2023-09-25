@@ -1,17 +1,10 @@
-from src.pull_html import BASE_URL, COLLECTIONS_URL, COLLECTIONS_FILENAME, HTML_FILES, ReadHTML, GetHTML
-from src.data_services.constants import HTMLStrings
-from os import remove
-from glob import glob
+from src.pull_html import BASE_URL, COLLECTIONS_URL, COLLECTIONS_FILENAME, ReadHTML, GetHTML
+from src.data_services.constants import HTMLStrings, TEMP
+from urllib.request import urlretrieve
 
 
 def gen_html_filename(band: str):
     return f"{band.lower()}.txt"
-
-
-def clear_local_html(folder: str = HTML_FILES):
-    files = glob(f"{folder}*")
-    for file in files:
-        remove(file)
 
 
 class HTMLService:
@@ -68,9 +61,19 @@ class HTMLMerchServ(HTMLService):
         image_source_list = [element.find(image_tag)[src_tag] for element in image_data_list]
         return image_source_list
 
+    def _save_image(self):
+        image_source_list = self._parse_image_source()
+        name_list = self.return_text(self.name_strings['tag'], self.name_strings['class'])
+        file_loc_list = []
+        for image, name in dict(zip(image_source_list, name_list)).items():
+            file_loc = f"{TEMP}{name}.png"
+            urlretrieve(f"https:{image}", file_loc)
+            file_loc_list.append(file_loc)
+        return file_loc_list
+
     def return_names_images_prices_list(self):
         name_list = self.return_text(self.name_strings['tag'], self.name_strings['class'])
         url_list = self.return_urls(self.url_strings['tag'], self.url_strings['class'], self.url_strings['url'])
         price_list = self.return_text(self.price_strings['tag'], self.price_strings['class'])
-        image_list = self._parse_image_source()
+        image_list = self._save_image()
         return zip(name_list, url_list, image_list, price_list)

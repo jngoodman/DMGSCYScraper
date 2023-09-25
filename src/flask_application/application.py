@@ -1,5 +1,5 @@
-from flask import Flask, render_template, redirect, url_for
-from src.data_services import SQLService, create_storage_directories, clear_local_html
+from flask import Flask, render_template, redirect, url_for, send_file
+from src.data_services import SQLService, create_storage_directories, clear_temp, TEMP
 from src.handle_sql import DMGSCY_PATH
 
 
@@ -71,15 +71,19 @@ def create_app():
         service.remove_from_table(name)
         return redirect(url_for('main_page'))
 
+    @app.route("/collection/temp/<file_name>")
+    def serve_image(file_name: str):
+        return send_file(f"../../{TEMP}{file_name}")
+
     @app.route("/delete_database")
     def delete_database():
         service = SQLService(database_file=DMGSCY_PATH)
         service.delete_database()
         return redirect(url_for('main_page'))
 
-    @app.route("/clear_html")
-    def clear_html():
-        clear_local_html()
+    @app.route("/clear_temp")
+    def clear_html_and_temp():
+        clear_temp()
         return redirect(url_for('main_page'))
 
     return app
