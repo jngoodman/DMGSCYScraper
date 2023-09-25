@@ -5,6 +5,4 @@ Run main.py then click URL to use.
 To add:
 > Improved appearance
 > 
-> Locally stored images
-> 
 > Lets you know when new things added to favourites (chron)
